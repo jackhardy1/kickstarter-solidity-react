@@ -24,6 +24,8 @@ class RequestNew extends Component {
   onSubmit = async (event) => {
     event.preventDefault();
 
+    this.setState({ loading: true, errorMessage: '' });
+
     const campaign = Campaign(this.props.address);
     const { description, value, recipient } = this.state;
 
@@ -36,14 +38,22 @@ class RequestNew extends Component {
           .send({
             from: accounts[0]
           });
+        Router.pushRoute(`/campaigns/${this.props.address}/requests`);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
+
+    this.setState({loading: false});
   }
 
   render() {
     return (
       <Layout>
+        <Link route={`/campaigns/${this.props.address}/requests`}>
+          <a>
+            Back
+          </a>
+        </Link>
         <h3>Create a Request</h3>
 
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
@@ -56,6 +66,7 @@ class RequestNew extends Component {
             }
           />
         </Form.Field>
+
         <Form.Field>
           <label>Value</label>
           <Input 
@@ -67,6 +78,7 @@ class RequestNew extends Component {
             }
           />
         </Form.Field>
+
         <Form.Field>
           <label>Recipient</label>
           <Input 
